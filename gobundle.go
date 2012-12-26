@@ -9,9 +9,18 @@ import (
 	"sort"
 )
 
+var (
+	Bundles = &BundleOfBundles{bundles: make(map[string]*Bundle)}
+)
+
 type file struct {
 	data         []byte
 	uncompressed []byte
+}
+
+// Map of registered bundles
+type BundleOfBundles struct {
+	bundles map[string]*Bundle
 }
 
 type Bundle struct {
@@ -48,12 +57,12 @@ func (b *Builder) Build() *Bundle {
 	for key, _ := range b.bundle.files {
 		names = append(names, key)
 	}
-	names = sort.Strings(names)
+	sort.Strings(names)
 	b.bundle.names = names
 	if b.bundle.compressed && b.uncompressOnInit {
 		b.bundle.compressed = false
 	}
-	Bundles[b.bundle.Name] = b.bundle
+	Bundles.Add(b.bundle)
 	return b.bundle
 }
 
@@ -142,5 +151,23 @@ func (b *Bundle) Open(path string) (io.Reader, error) {
 	return bytes.NewReader(file.data), nil
 }
 
-// Map of registered bundles
-var Bundles map[string]*Bundle
+func (b *BundleOfBundles) Add(bundle *Bundle) {
+	b.bundles[bundle.Name] = bundle
+}
+
+// Return the named Bundle, or nil if not found.
+func (b *BundleOfBundles) Bundle(name string) *Bundle {
+	if a, ok := b.bundles[name]; ok {
+		return a
+	}
+	return nil
+}
+
+// Return list of all available bundles.
+func (b *BundleOfBundles) Bundles() []*Bundle {
+	bundles := make([]*Bundle, 0, len(b.bundles))
+	for _, n := range b.bundles {
+		bundles = append(bundles, n)
+	}
+	return bundles
+}

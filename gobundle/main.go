@@ -52,10 +52,10 @@ var {{ .Bundle | ToTitle }}Bundle *gobundle.Bundle = gobundle.NewBuilder("{{ .Bu
 
 var (
 	targetFlag             = flag.String("target", "", "target bundle filename to generate")
-	recurseFlag            = flag.BoolP("recursive", "r", false, "recursively add files")
 	pkgFlag                = flag.String("package", "", "target package name (inferred from --target if not provided)")
 	bundleFlag             = flag.String("bundle", "", "bundle name (inferred from --package if not provided)")
 	excludeFlag            = flag.String("exclude", "", "list of globs to exclude from")
+	recurseFlag            = flag.BoolP("recursive", "r", false, "recursively add files")
 	compressFlag           = flag.BoolP("compress", "c", false, "compress files before encoding")
 	retainUncompressedFlag = flag.BoolP("retain_uncompressed", "u", false, "whether to retain the uncompressed copy on initial access")
 	uncompressOnInitFlag   = flag.BoolP("uncompress_on_init", "i", false, "whether to uncompress files on package init()")
