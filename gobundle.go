@@ -134,7 +134,7 @@ func (b *Bundle) Bytes(path string) ([]byte, error) {
 				return nil, err
 			}
 			if b.retainUncompressed {
-				file.data = wb.Bytes()
+				file.uncompressed = wb.Bytes()
 			}
 			return wb.Bytes(), nil
 		} else {
