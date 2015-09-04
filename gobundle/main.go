@@ -17,7 +17,6 @@ import (
 	"bytes"
 	"compress/zlib"
 	"fmt"
-	flag "github.com/ogier/pflag"
 	"io"
 	"os"
 	"path"
@@ -25,6 +24,8 @@ import (
 	"strconv"
 	"strings"
 	"text/template"
+
+	flag "github.com/ogier/pflag"
 )
 
 const (
@@ -55,7 +56,7 @@ import (
     "github.com/alecthomas/gobundle"
 )
 
-var {{ .Bundle | ToTitle }}Bundle *gobundle.Bundle = gobundle.NewBuilder("{{ .Bundle }}"){{if .Compressed}}.Compressed(){{ if .RetainUncompressed }}.RetainUncompressed(){{ end }}{{ if .UncompressOnInit }}.UncompressOnInit(){{ end }}{{end}}`
+var {{ .Bundle | ToTitle }}Bundle = gobundle.NewBuilder("{{ .Bundle }}"){{if .Compressed}}.Compressed(){{ if .RetainUncompressed }}.RetainUncompressed(){{ end }}{{ if .UncompressOnInit }}.UncompressOnInit(){{ end }}{{end}}`
 	FILE_TEMPLATE = `.Add(
     "{{ .Name }}", {{ .Content }},
 )`
