@@ -13,12 +13,12 @@ type Bundled struct {
 }
 
 var extracted Bundled
-
+ 
 func tearDown() {
 	os.Remove("testbundle.go")
 }
 
-func TestBundleCreate(t *testing.T) {
+func setUp(t *testing.T) {
 	cmd := exec.Command(
 		"gobundle",
 		"--uncompress_on_init",
@@ -34,6 +34,7 @@ func TestBundleCreate(t *testing.T) {
 }
 
 func TestBundle(t *testing.T) {
+	setUp(t)
 	bundle, _ := GobundleBundle.Open("fixtures/bundled.json")
 	data, _ := ioutil.ReadAll(bundle)
 	err := json.Unmarshal(data, &extracted)
