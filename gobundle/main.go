@@ -29,7 +29,8 @@ import (
 )
 
 const (
-	USAGE = `usage: {{.Name}} <path> [<path> ...]
+	// Usage contains usage information
+	Usage = `usage: {{.Name}} <path> [<path> ...]
 
 This utility and library can be used to compile static files into a binary.
 
@@ -50,17 +51,20 @@ possibly in conjunction with other flags that modify the bundle behavior:
 
 Flags:
 `
-	HEADER_TEMPLATE = `package {{ .Package }}
+	// HeaderTemplate contains the main template output.
+	HeaderTemplate = `package {{ .Package }}
 
 import (
     "github.com/alecthomas/gobundle"
 )
 
 var {{ .Bundle | ToTitle }}Bundle = gobundle.NewBuilder("{{ .Bundle }}"){{if .Compressed}}.Compressed(){{ if .RetainUncompressed }}.RetainUncompressed(){{ end }}{{ if .UncompressOnInit }}.UncompressOnInit(){{ end }}{{end}}`
-	FILE_TEMPLATE = `.Add(
+	// FileTemplate contains the file template output.
+	FileTemplate = `.Add(
     "{{ .Name }}", {{ .Content }},
 )`
-	FOOTER_TEMPLATE = `.Build()
+	// FooterTemplate contains the footer template output.
+	FooterTemplate = `.Build()
 `
 )
 
@@ -76,12 +80,14 @@ var (
 	encodeAsBytesFlag      = flag.BoolP("encode_as_bytes", "b", false, "whether to encode as bytes or the default, escaped strings")
 
 	funcMap = map[string]interface{}{"ToTitle": strings.Title}
-	usage   = template.Must(template.New("usage").Parse(USAGE))
-	header  = template.Must(template.New("header").Funcs(funcMap).Parse(HEADER_TEMPLATE))
-	file    = template.Must(template.New("file").Parse(FILE_TEMPLATE))
-	footer  = template.Must(template.New("footer").Parse(FOOTER_TEMPLATE))
+	usage   = template.Must(template.New("usage").Parse(Usage))
+	header  = template.Must(template.New("header").Funcs(funcMap).Parse(HeaderTemplate))
+	file    = template.Must(template.New("file").Parse(FileTemplate))
+	footer  = template.Must(template.New("footer").Parse(FooterTemplate))
 )
 
+// BundleContext contains contextual information around a
+// bundle.
 type BundleContext struct {
 	Package            string
 	Bundle             string
@@ -90,16 +96,19 @@ type BundleContext struct {
 	UncompressOnInit   bool
 }
 
+// FileContext contains contextual information around a file.
 type FileContext struct {
 	Name    string
-	Id      int
 	Content string
 }
 
+// BufferCloser encapsulates a buffer.
 type BufferCloser struct {
 	bytes.Buffer
 }
 
+// Close represents a close operation.
+// TODO - is this needed?
 func (b *BufferCloser) Close() error {
 	return nil
 }
