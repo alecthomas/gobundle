@@ -1,4 +1,4 @@
-package gobundle
+package tests
 
 import (
 	"encoding/json"
@@ -12,8 +12,10 @@ type Bundled struct {
 	Name string
 }
 
-var extracted Bundled
- 
+var (
+	extracted Bundled
+)
+
 func tearDown() {
 	os.Remove("testbundle.go")
 }
@@ -23,7 +25,7 @@ func setUp(t *testing.T) {
 		"gobundle",
 		"--uncompress_on_init",
 		"--compress",
-		"--package=gobundle",
+		"--package=tests",
 		"--target=testbundle.go",
 		"fixtures/bundled.json",
 	)
@@ -35,7 +37,7 @@ func setUp(t *testing.T) {
 
 func TestBundle(t *testing.T) {
 	setUp(t)
-	bundle, _ := GobundleBundle.Open("fixtures/bundled.json")
+	bundle, _ := TestsBundle.Open("fixtures/bundled.json")
 	data, _ := ioutil.ReadAll(bundle)
 	err := json.Unmarshal(data, &extracted)
 	if err != nil {
