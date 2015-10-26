@@ -17,9 +17,9 @@ package gobundle
 import (
 	"bytes"
 	"compress/zlib"
+	"fmt"
 	"io"
 	"io/ioutil"
-	"os"
 	"sort"
 )
 
@@ -130,11 +130,15 @@ func (b *Bundle) Files() []string {
 	return b.names
 }
 
+func errNotExist(path string) error {
+	return fmt.Errorf("file does not exist: %s", path)
+}
+
 // Bytes returns the bytes for a file.
 func (b *Bundle) Bytes(path string) ([]byte, error) {
 	file := b.files[path]
 	if file == nil {
-		return nil, os.ErrNotExist
+		return nil, errNotExist(path)
 	}
 	if b.compressed {
 		if file.uncompressed == nil {
@@ -161,7 +165,7 @@ func (b *Bundle) Bytes(path string) ([]byte, error) {
 func (b *Bundle) Open(path string) (io.Reader, error) {
 	file := b.files[path]
 	if file == nil {
-		return nil, os.ErrNotExist
+		return nil, errNotExist(path)
 	}
 	if b.compressed {
 		if file.uncompressed == nil {
